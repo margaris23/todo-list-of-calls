@@ -1,7 +1,7 @@
 {
-  "name": "Node.js Getting Started",
-  "description": "A barebones Node.js app using Express 4",
-  "repository": "https://github.com/heroku/node-js-getting-started",
-  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "name": "Todo Calls List",
+  "description": "A todo application for calls",
+  "repository": "https://github.com/reverence23/todo-calls-list.git",
+  "logo": "",
   "keywords": ["node", "express", "static"]
 }

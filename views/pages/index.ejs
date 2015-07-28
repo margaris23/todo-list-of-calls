@@ -21,15 +21,15 @@
 
 <div class="container" ng-controller="CallsCtrl">
   <div class="alert alert-info text-center" role="alert">
-   Latest call
+   Calls
   </div>
   <hr>
   <div class="row">
     <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-info-sign"></span> Calls</h3>
+      <h3><span class="glyphicon glyphicon-info-sign"></span>Calls</h3>
       <ul>
-        <li>a</li>
-        <li>a</li>
+		  <li>Name | Phone | Time | Delete | Done</li>
+		  <li ng-repeat="call in calls">{{call.name}}{{call.phone}}{{call.time}}</li>
       </ul>
     </div>
     <div class="col-md-6">
@@ -46,6 +46,7 @@
 </div>
 
 <!-- includes -->
+<script src="js/common/Call.js"></script>
 <script src="js/services/localStorageSvc.js"></script>
 <script src="js/services/callSvc.js"></script>
 <script src="js/controllers/nextCall.js"></script>
