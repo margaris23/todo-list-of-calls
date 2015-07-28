@@ -6,7 +6,11 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
 	var callAPI = {
 		getCalls: function (cb) {
 			cb = cb || function() {};
-			cb('Not implemented');
+			try {
+				cb(null, LocalStorage.getItem('calls'));
+			} catch (e) {
+				cb(e);
+			}
 		},
 		addCall: function (name, phone, time, cb) {
 			cb = cb || function() {};
