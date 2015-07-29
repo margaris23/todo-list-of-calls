@@ -6,47 +6,89 @@
 
 <body ng-app="TodoCalls">
 
-  <% include ../partials/nav.ejs %>
+<% include ../partials/nav.ejs %>
 
 <div class="jumbotron text-center" ng-controller="NextCallCtrl">
-  <div class="container">
+  <div class="container" ng-switch="nextcall !== null">
     <a href="/" class="lang-logo">
-      <img src="/lang-logo.png">
+      <img src="/phone-logo.png">
     </a>
-    <h1>Next Call</h1>
-    <p>Your next call is soon</p>
-	{{nextcall.name}} {{nextcall.phone}} {{nextcall.time}}
+    <div ng-switch-default>
+      <p><i>You do not have a call yet!</i></p>
+    </div>
+    <div ng-switch-when="true">
+      <h2>Next Call</h2>
+	    <p>@{{nextcall.name}}@ @{{nextcall.phone}}@ @{{nextcall.time}}@</p>
+    </div>
   </div>
 </div>
 
 <div class="container" ng-controller="CallsCtrl">
-  <div class="alert alert-info text-center" role="alert">
-   Calls
-  </div>
+  <div class="alert alert-info text-center" role="alert">Add call</div>
   <hr>
+
+  <!-- Add a call -->
   <div class="row">
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-info-sign"></span>Calls</h3>
-      <ul>
-		  <li>Name | Phone | Time | Delete | Done</li>
-		  <li ng-repeat="call in calls">{{call.name}}{{call.phone}}{{call.time}}</li>
-      </ul>
-    </div>
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-link"></span> New call</h3>
-      <ul>
-        <li><a href="#">new</a></li>
-        <li><a href="#">next</a></li>
-      </ul>
-    </div>
-  </div> <!-- row -->
-   <div class="alert alert-info text-center" role="alert">
-   more description goes here
+    <div class="col-md-12">
+     <form class="form-inline" role="form">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" maxLength="30" ng-model="call.name" class="form-control" id="name" placeholder="Name">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input type="text" ng-pattern="" ng-model="call.phone" class="form-control" id="phone" placeholder="Phone number">
+      </div>
+      <div class="form-group">
+        <label for="phone">Time:</label>
+        <input type="text" ng-pattern="timePattern" ng-model="call.time" class="form-control" id="time" placeholder="Time (24h)">
+      </div>
+      <button type="submit" ng-click="addCall()" class="btn btn-default">Add</button>
+    </form>
   </div>
+  </div>
+
+  <hr>
+
+  <!-- Calls -->
+  <div class="alert alert-info text-center" role="alert">Calls</div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <table st-table="calls" class="table table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>time</th>
+          <th></th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="call in calls">
+          <td>{{call.name}}</td>
+          <td>{{call.phone}}</td>
+          <td>{{call.time}}</td>
+          <td>
+            <a ng-click="deleteCall(call)">delete</a>
+          </td>
+          <td>
+            <input type="checkbox" disabled ng-checked="true" aria-label="...">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- includes -->
-<script src="js/common/Call.js"></script>
+<script src="js/common/call.js"></script>
+<script src="js/directives/directives.js"></script>
 <script src="js/services/localStorageSvc.js"></script>
 <script src="js/services/callSvc.js"></script>
 <script src="js/controllers/nextCall.js"></script>

@@ -1,4 +1,6 @@
 angular.module('TodoCalls', [
-  'TodoCalls.controllers',
-  'TodoCalls.services'
+	'smart-table',
+  	'TodoCalls.directives',
+  	'TodoCalls.controllers',
+  	'TodoCalls.services'
 ]);

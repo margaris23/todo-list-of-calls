@@ -1,30 +1,53 @@
 controllers.controller('CallsCtrl',
-	['$scope', 'CallSvc',
-		function ($scope, CallSvc) {
-			console.log('CallsCtrl started');
+    ['$scope', 'CallSvc',
+        function ($scope, CallSvc) {
+            console.log('CallsCtrl started');
 
-			// interface
-			$scope.addCall = function () {
-				CallSvc.addCall($scope.call, function (err) {
-					error && console.log('Error creating new call' + err);
-				});
-			};
+            function getCalls() {
+                CallSvc.getCalls(function (error, reply) {
+                    if (error) {
+                        console.log('Error getting listof calls: ' + error);
+                        return;
+                    }
+                    $scope.calls = reply;
+                });
+            }
 
-			// Events
-			$scope.$on('$destroy', function () {
-				console.log('CallsCtrl destroyed');
-			});
+            // Public interface
+            $scope.addCall = function () {
+                CallSvc.addCall($scope.call, function (error) {
+                    if (!error) {
+                        // reset call object
+                        $scope.call = new Call();
+                        // retrieve calls: TODO create pubsubsvc
+                        getCalls();
+                        return;
+                    }
+                    console.log('Error creating new call: ' + error);
+                });
+            };
 
-			// Initialization
-			$scope.calls = [];
-			$scope.call = new Call();
+            $scope.deleteCall = function (call) {    
+                call && CallSvc.deleteCall(call.id, function (error) {
+                    if (!error) {
+                        getCalls();
+                        return;
+                    }
+                    console.log('CallsCtrl: call could not be deleted: ' + error);
+                });
+            };
 
-			CallSvc.getCalls(function (err,reply) {
-				if (err) {
-					console.log('Error getting listof calls: ' + err);
-					return;
-				}
-				$scope.calls = reply;
-			});
-		}
-	]);
+            $scope.timePattern = CallSvc.TIME_PATTERN;
+
+            // Events
+            $scope.$on('$destroy', function () {
+                console.log('CallsCtrl destroyed');
+            });
+
+            // Initialization
+            $scope.calls = [];
+            $scope.call = new Call();
+
+            getCalls();
+        }
+    ]);
