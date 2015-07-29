@@ -10,6 +10,7 @@
 
 <div class="jumbotron text-center" ng-controller="NextCallCtrl">
   <div class="container" ng-switch="nextcall !== null">
+    <h1>Todo Calls</h1>
     <a href="/" class="lang-logo">
       <img src="/phone-logo.png">
     </a>
@@ -17,72 +18,89 @@
       <p><i>You do not have a call yet!</i></p>
     </div>
     <div ng-switch-when="true">
-      <h2>Next Call</h2>
-	    <p>@{{nextcall.name}}@ @{{nextcall.phone}}@ @{{nextcall.time}}@</p>
+	    <p>... next call with <span>{{nextcall.name}}</span> (<span>{{nextcall.phone}})</span> is at <span>{{nextcall.time}}</span> !</p>
     </div>
   </div>
 </div>
 
 <div class="container" ng-controller="CallsCtrl">
-  <div class="alert alert-info text-center" role="alert">Add call</div>
-  <hr>
-
+  
   <!-- Add a call -->
-  <div class="row">
-    <div class="col-md-12">
-     <form class="form-inline" role="form">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" maxLength="30" ng-model="call.name" class="form-control" id="name" placeholder="Name">
+  <div class="panel panel-default">
+    <div class="panel-heading">Add a call</div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-12">
+         <form class="navbar-form" role="form">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" maxLength="30" ng-model="call.name" class="form-control" id="name" placeholder="Name">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" ng-pattern="" ng-model="call.phone" class="form-control" id="phone" placeholder="Phone number">
+          </div>
+          <div class="form-group">
+            <label for="phone">Time:</label>
+            <input type="text" ng-pattern="timePattern" ng-model="call.time" class="form-control" id="time" placeholder="Time (24h)">
+          </div>
+          <button type="submit" ng-click="addCall()" class="btn btn-default">Add</button>
+          <span ng-if="error" class="error">{{error}}</span>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="phone">Phone:</label>
-        <input type="text" ng-pattern="" ng-model="call.phone" class="form-control" id="phone" placeholder="Phone number">
-      </div>
-      <div class="form-group">
-        <label for="phone">Time:</label>
-        <input type="text" ng-pattern="timePattern" ng-model="call.time" class="form-control" id="time" placeholder="Time (24h)">
-      </div>
-      <button type="submit" ng-click="addCall()" class="btn btn-default">Add</button>
-    </form>
+    </div>
+    </div>
   </div>
-  </div>
-
+  
   <hr>
 
   <!-- Calls -->
-  <div class="alert alert-info text-center" role="alert">Calls</div>
+   <div class="panel panel-primary">
+    <div class="panel-heading">Calls</div>
+    <div class="panel-body">
 
   <div class="row">
     <div class="col-md-12">
 
       <table st-table="calls" class="table table-striped">
         <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>time</th>
-          <th></th>
-          <th></th>
-        </tr>
-        </thead>
+          <tr>
+            <th st-sort="name">Name</th>
+            <th st-sort="phone">Phone</th>
+            <th st-sort-default="true" st-sort="time">time</th>
+            <th></th>
+            <th></th>
+          </tr>
+          </thead>
         <tbody>
-        <tr ng-repeat="call in calls">
-          <td>{{call.name}}</td>
-          <td>{{call.phone}}</td>
-          <td>{{call.time}}</td>
-          <td>
-            <a ng-click="deleteCall(call)">delete</a>
-          </td>
-          <td>
-            <input type="checkbox" disabled ng-checked="true" aria-label="...">
-          </td>
-        </tr>
+          <tr ng-repeat="call in calls">
+            <td>{{call.name}}</td>
+            <td>{{call.phone}}</td>
+            <td>{{call.time}}</td>
+            <td>
+              <a ng-click="deleteCall(call)">delete</a>
+            </td>
+            <td>
+              <input type="checkbox" disabled ng-checked="false" aria-label="...">
+            </td>
+          </tr>
         </tbody>
+        <nav>
+  
       </table>
 
+      <!-- Paging -->
+      <nav>
+        <ul class="pager">
+          <li><a href="#" ng-click="showAll()">All</a></li>
+          <li><a href="#" ng-click="next()">Next</a></li>
+          <li><a href="#" ng-click="showFinished()">Finished</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
+</div>
+</div>
 
 </div>
 
@@ -90,6 +108,7 @@
 <script src="js/common/call.js"></script>
 <script src="js/directives/directives.js"></script>
 <script src="js/services/localStorageSvc.js"></script>
+<script src="js/services/pubsubSvc.js"></script>
 <script src="js/services/callSvc.js"></script>
 <script src="js/controllers/nextCall.js"></script>
 <script src="js/controllers/calls.js"></script>

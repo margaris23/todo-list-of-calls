@@ -6,7 +6,7 @@ controllers.controller('CallsCtrl',
             function getCalls() {
                 CallSvc.getCalls(function (error, reply) {
                     if (error) {
-                        console.log('Error getting listof calls: ' + error);
+                        console.log('[CallsCtrl] Error getting listof calls: ' + error);
                         return;
                     }
                     $scope.calls = reply;
@@ -23,7 +23,8 @@ controllers.controller('CallsCtrl',
                         getCalls();
                         return;
                     }
-                    console.log('Error creating new call: ' + error);
+                    $scope.error = error;
+                    console.log('[CallsCtrl] Error creating new call: ' + error);
                 });
             };
 
@@ -33,20 +34,23 @@ controllers.controller('CallsCtrl',
                         getCalls();
                         return;
                     }
-                    console.log('CallsCtrl: call could not be deleted: ' + error);
+                    console.log('[CallsCtrl] call could not be deleted: ' + error);
                 });
             };
 
+            // Probably not needed but added just in case
             $scope.timePattern = CallSvc.TIME_PATTERN;
+            $scope.itemsPerPage = CallSvc.ITEMS_PER_PAGE;
 
             // Events
             $scope.$on('$destroy', function () {
-                console.log('CallsCtrl destroyed');
+                console.log('[CallsCtrl] destroyed');
             });
 
             // Initialization
             $scope.calls = [];
             $scope.call = new Call();
+            $scope.error = null;
 
             getCalls();
         }

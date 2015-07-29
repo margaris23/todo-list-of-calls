@@ -1,7 +1,7 @@
 services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
     console.log('CallSvc started');
 
-    var PAGING = 10;
+    var ITEMS_PER_PAGE = 10;
     var TIME_PATTERN = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
     // List of calls: initialize with content from storage
@@ -66,7 +66,7 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
             var nextCall = null;
             _calls.forEach(function (call) {
                 // if now < call < next  then next = call
-                if ( now.localeCompare(call.time) === 1 &&
+                if ( now.localeCompare(call.time) === -1 &&
                     nextCallTime.localeCompare(call.time) === 1) {
                     nextCall = call;
                     nextCallTime = call.time;
@@ -74,7 +74,8 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
             });
             cb(nextCall);
         },
-        TIME_PATTERN: TIME_PATTERN
+        TIME_PATTERN: TIME_PATTERN,
+        ITEMS_PER_PAGE: ITEMS_PER_PAGE
     };
 }]);
 

@@ -1,4 +1,6 @@
+// Initialize services: Normally this should be done will a js-loader
 var services = angular.module('TodoCalls.services',[]);
+
 services.factory('LocalStorage',['$window', function ($window) {
         console.log('LocalStorage started');
 
