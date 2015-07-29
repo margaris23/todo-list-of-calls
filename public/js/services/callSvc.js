@@ -1,4 +1,4 @@
-services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
+services.factory('CallSvc', ['LocalStorage', 'PubSubSvc', function (LocalStorage, PubSubSvc) {
     console.log('CallSvc started');
 
     var ITEMS_PER_PAGE = 10;
@@ -19,6 +19,7 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
     getCalls(function (error, reply) {
         if (reply) {
             _calls = reply;
+            PubSubSvc.publish("/calls/loaded");
             return;
         }
 
@@ -42,6 +43,7 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
                 }
                 // on success add it to cache
                 _calls.push(call);
+                PubSubSvc.publish("/call/added");
                 cb();
             });
         },
@@ -54,6 +56,7 @@ services.factory('CallSvc', ['LocalStorage', function (LocalStorage) {
                         return call.id !== id; 
                     });
                 }
+                PubSubSvc.publish("/call/removed");
                 cb(error);
             });
         },

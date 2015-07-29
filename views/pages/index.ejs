@@ -15,10 +15,10 @@
       <img src="/phone-logo.png">
     </a>
     <div ng-switch-default>
-      <p><i>You do not have a call yet!</i></p>
+      <p><i>... no calls yet!</i></p>
     </div>
     <div ng-switch-when="true">
-	    <p>... next call with <span>{{nextcall.name}}</span> (<span>{{nextcall.phone}})</span> is at <span>{{nextcall.time}}</span> !</p>
+	    <p class="blink">... next call with <span>{{nextcall.name}}</span> (<span>{{nextcall.phone}})</span> is at <span>{{nextcall.time}}</span> !</p>
     </div>
   </div>
 </div>
@@ -84,6 +84,7 @@
               <input type="checkbox" disabled ng-checked="false" aria-label="...">
             </td>
           </tr>
+          <tr ng-show="calls.length == 0"><td><i>No calls</i></td></tr>
         </tbody>
         <nav>
   

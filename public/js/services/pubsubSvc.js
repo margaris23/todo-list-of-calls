@@ -1,5 +1,5 @@
 services.factory('PubSubSvc', function () {
-    console.log('PubSubSvc started');
+    console.log('[PubSubSvc] started');
 
     var _subscriptions = {};
 
@@ -24,7 +24,10 @@ services.factory('PubSubSvc', function () {
             }
         },
         publish: function (event) {
-
+            var subs = _subscriptions[event];
+            subs && subs.forEach(function (fn) {
+                fn.call();
+            });
         }
     };
 });

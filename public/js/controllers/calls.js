@@ -42,7 +42,7 @@ controllers.controller('CallsCtrl',
             $scope.timePattern = CallSvc.TIME_PATTERN;
             $scope.itemsPerPage = CallSvc.ITEMS_PER_PAGE;
 
-            // Events
+            // Events & Listeners
             $scope.$on('$destroy', function () {
                 console.log('[CallsCtrl] destroyed');
             });
