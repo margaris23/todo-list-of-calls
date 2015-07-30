@@ -11,9 +11,11 @@ services.factory('LocalStorage',['$window', function ($window) {
         var domain = {
             name: DOMAIN_NAME,
             version: '1.0',
-            date: Date.now(),   // current date
             content: []
         };
+        // Assign 'domain' new date in mmddyyyy format
+        var newDate = new Date();
+        domain.date = newDate.toLocaleDateString().replace(/\//g, '')
 
         function supports_html5_storage() {
             try {
@@ -47,16 +49,21 @@ services.factory('LocalStorage',['$window', function ($window) {
             }
 
             try {
-                var currentDomain = JSON.parse(_localStorage.getItem(DOMAIN_NAME));
+                var localDomain = JSON.parse(_localStorage.getItem(DOMAIN_NAME));
                 var newVersion = domain.version;
-                if ( newVersion.localeCompare(currentDomain.version) === 1) {
+                var newDomainDate = domain.date;
+                if (newVersion.localeCompare(localDomain.version) === 1) {
                     // current product is newer than the one preserved in localstorage
                     // for now reset (in later versions , migrate)
                     reset();
+                } else if (newDomainDate.localeCompare(localDomain.date) === 1) {
+                    // If date changed then clear storage
+                    console.log('[LocalStorage] New Day!');
+                    reset();
                 }
-                // TODO compare dates in order to reset
+
             } catch (e) {
-                console.log('LocalStorage: reseting data ...');
+                console.log('[LocalStorage] reseting data ...');
                 reset();
             }
         }

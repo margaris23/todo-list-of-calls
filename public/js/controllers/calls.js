@@ -24,6 +24,12 @@ controllers.controller('CallsCtrl',
                         return;
                     }
                     $scope.error = error;
+
+                    if (error === Common.INVALID_PHONE) {
+                        $scope.form.$setValidity("phone", false);
+                        $scope.form.$invalid = false;
+                    }
+
                     console.log('[CallsCtrl] Error creating new call: ' + error);
                 });
             };
@@ -36,6 +42,11 @@ controllers.controller('CallsCtrl',
                     }
                     console.log('[CallsCtrl] call could not be deleted: ' + error);
                 });
+            };
+
+            $scope.isCompleted = function (call) {
+                console.log("test");
+                return true;
             };
 
             // Probably not needed but added just in case

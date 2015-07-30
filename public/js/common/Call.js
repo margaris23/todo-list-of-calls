@@ -5,4 +5,7 @@ var Call = function (name, phone, time) {
     this.name = name;
     this.phone = phone;
     this.time = time;
+
+    // ui property (performance fix)
+    this.complete = false;
 };

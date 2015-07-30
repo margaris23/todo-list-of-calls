@@ -7,11 +7,61 @@ services.factory('CallSvc', ['LocalStorage', 'PubSubSvc', function (LocalStorage
     // List of calls: initialize with content from storage
     var _calls = [];
 
+    var _nextCall = null;
+
     function getCalls (cb) {
-        LocalStorage.getItems(cb);
+        LocalStorage.getItems(function (error, reply) {
+            cb = cb || function () {};
+
+            if (error || !reply) {
+                cb(error, reply);
+                return;
+            }
+
+            // cache calls
+            _calls = reply;
+
+            // get current time in hh:mm format
+            var now = new Date().toTimeString().replace(/.*(\d{2}:\d{2}):\d{2}.*/, "$1");
+
+            var nextCallTime = "23:59";
+            var nextCall = null;
+
+            _calls.forEach(function (call) {
+                // if now < call < next  then next = call
+                var diff = now.localeCompare(call.time);
+                if (diff === 1) {
+                    call.isComplete = true;
+                } else if ( diff === -1 &&
+                    nextCallTime.localeCompare(call.time) === 1) {
+                    nextCall = call;
+                    nextCallTime = call.time;
+                }
+            });
+
+            //cache next call
+            _nextCall = nextCall;
+
+            cb(error, _calls);
+        });
     }
 
-    function validate (call) {
+    function validate (call, cb) {
+        if (!call || !call.name || !call.phone || !call.time) {
+            cb && cb(Common.INVALID_DATA);
+            return false;
+        }
+
+        var phone = call.phone;
+        // TODO fix regex
+        if (!/^00[0-9]{3} [0-9]{3} [0-9]{3}/.exec(call.phone)) {
+            cb && cb(Common.INVALID_PHONE);
+            return false;
+        }
+
+        // convert phone
+        call.phone = phone.replace(/^\+/, '00').replace(/[\(|\)]/g, '');
+
         return true;
     }
 
@@ -30,8 +80,7 @@ services.factory('CallSvc', ['LocalStorage', 'PubSubSvc', function (LocalStorage
         getCalls: getCalls,
         addCall: function (call, cb) {
             cb = cb || function () {};
-            if (!validate(call)) {
-                cb('Invalid data');
+            if (!validate(call, cb)) {
                 return;
             }
 
@@ -61,21 +110,8 @@ services.factory('CallSvc', ['LocalStorage', 'PubSubSvc', function (LocalStorage
             });
         },
         getNextCall: function (cb) {
-            cb = cb || function () {};
-            // get current time in hh:mm format
-            var now = new Date().toTimeString().replace(/.*(\d{2}:\d{2}):\d{2}.*/, "$1");
-
-            var nextCallTime = "23:59";
-            var nextCall = null;
-            _calls.forEach(function (call) {
-                // if now < call < next  then next = call
-                if ( now.localeCompare(call.time) === -1 &&
-                    nextCallTime.localeCompare(call.time) === 1) {
-                    nextCall = call;
-                    nextCallTime = call.time;
-                }
-            });
-            cb(nextCall);
+            getCalls();
+            cb && cb(_nextCall);
         },
         TIME_PATTERN: TIME_PATTERN,
         ITEMS_PER_PAGE: ITEMS_PER_PAGE

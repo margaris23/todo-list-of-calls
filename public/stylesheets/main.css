@@ -83,3 +83,8 @@
     50% { opacity: 0.3; }
     100% { opacity: 1.0; }
 }
+
+.ng-invalid-pattern {
+  border-color: #E96666;
+  outline: 0;
+}
